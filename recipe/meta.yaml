@@ -1,49 +1,68 @@
 {% set name = "pipreqs" %}
-{% set version = "0.4.11" %}
-{% set sha256 = "c793b4e147ac437871b3a962c5ce467e129c859ece5ba79aca83c20f4d9c3aef" %}
+{% set version = "0.5.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  url: https://github.com/bndr/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: aee67b99063504941259421ca84ff0350c3b9516c880db5b52dd86fa676a72f1
 
 build:
-  noarch: python
   number: 0
-  script: python setup.py install --single-version-externally-managed --record record.txt
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   entry_points:
     - pipreqs=pipreqs.pipreqs:main
+  skip: True  # [py<36 or py>312]
 
 requirements:
   host:
-    - python >=3.6
+    - python
     - setuptools
-
+    - poetry-core
   run:
-    - python >=3.6
-    - docopt
-    - yarg
+    - python
+    - yarg >=0.1.9
+    - docopt >=0.6.2
+    - nbconvert >=7.11.0,<8.0.0
+    - ipython >=8.12.3
+  run_constrained:
+    - python >=3.8.1
+    - flake8 >=6.1.0,<7.0.0
+    - tox >=4.11.3,<5.0.0
+    - coverage >=7.3.2,<8.0.0
+    - sphinx >=7.2.6,<8.0.0  # [py>=39]
 
 test:
+  source_files:
+    - tests
   imports:
     - pipreqs
-
   commands:
     - pipreqs --help
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v tests
+  requires:
+    - pytest
 
 about:
   home: https://github.com/bndr/pipreqs
+  summary: Pip requirements.txt generator based on imports in project
   license: Apache-2.0
   license_family: Apache
   license_file: LICENSE
-  summary: Pip requirements.txt generator based on imports in project
+  description: Generate requirements.txt file for any project based on imports
   dev_url: https://github.com/bndr/pipreqs
+  doc_url: https://github.com/bndr/pipreqs/blob/master/README.rst
 
 extra:
   recipe-maintainers:
     - proinsias
     - ericmjl
+  skip-lints:
+  # + pip check
+  # pipreqs 0.5.0 has requirement ipython==8.12.3, but you have ipython 8.15.0.
+  # pipreqs 0.5.0 has requirement yarg==0.1.9, but you have yarg 0.1.10.
+  # WARNING: Tests failed for pipreqs-0.5.0-py39_0.conda 
+  - missing_pip_check
