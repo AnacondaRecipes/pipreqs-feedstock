@@ -19,7 +19,6 @@ build:
 requirements:
   host:
     - python
-    - setuptools
     - poetry-core
   run:
     - python
