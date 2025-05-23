@@ -40,11 +40,13 @@ test:
   imports:
     - pipreqs
   commands:
+    - pip check
     - pipreqs --help
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - pytest -v tests
   requires:
     - pytest
+    - pip
 
 about:
   home: https://github.com/bndr/pipreqs
