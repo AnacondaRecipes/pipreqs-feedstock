@@ -8,6 +8,8 @@ package:
 source:
   url: https://github.com/bndr/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
   sha256: aee67b99063504941259421ca84ff0350c3b9516c880db5b52dd86fa676a72f1
+  patches:
+    - patches/0001-update-dependencies.patch
 
 build:
   number: 0
@@ -17,6 +19,9 @@ build:
   skip: True  # [py<36 or py>312]
 
 requirements:
+  build:
+    - patch # [not win]
+    - m2-patch # [win]
   host:
     - python
     - poetry-core
@@ -55,9 +60,3 @@ extra:
   recipe-maintainers:
     - proinsias
     - ericmjl
-  skip-lints:
-  # + pip check
-  # pipreqs 0.5.0 has requirement ipython==8.12.3, but you have ipython 8.15.0.
-  # pipreqs 0.5.0 has requirement yarg==0.1.9, but you have yarg 0.1.10.
-  # WARNING: Tests failed for pipreqs-0.5.0-py39_0.conda 
-  - missing_pip_check
