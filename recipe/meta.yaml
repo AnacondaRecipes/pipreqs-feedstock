@@ -35,7 +35,6 @@ requirements:
   run_constrained:
     - python >=3.8.1
 
-# assert os.path.exists(notebook_requirement_path) == 1
 # assert os.path.getsize(notebook_requirement_path) == 1
 # AssertionError: assert 2 == 1
 {% set tests_to_skip = "test_ignore_notebooks" %}
