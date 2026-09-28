@@ -12,16 +12,13 @@ source:
     - patches/0001-update-dependencies.patch
 
 build:
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   entry_points:
     - pipreqs=pipreqs.pipreqs:main
   skip: True  # [py<38 or py>312]
 
 requirements:
-  build:
-    - patch # [not win]
-    - m2-patch # [win]
   host:
     - pip
     - python
